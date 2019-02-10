@@ -15,6 +15,8 @@ public class MainFrame extends JFrame implements ActionListener {
 		createNorthPanel();
 		createSouthPanel();
 		createCenterPanel();
+		createExtraPanels();
+		
 		setResizable(false);
 		setSize(400,300);
 		setLocationRelativeTo(null);
@@ -82,8 +84,30 @@ public class MainFrame extends JFrame implements ActionListener {
 		add(centerPanel);
 	}
 
-	private void crateListeners() {
+	private void createExtraPanels() {
+		eastPanel = new JPanel();
+		westPanel = new JPanel();
 		
+		eastPanel.setBackground(new Color(153,124,250));
+		westPanel.setBackground(new Color(153,124,250));
+		
+		add(eastPanel, BorderLayout.EAST);
+		add(westPanel, BorderLayout.WEST);
+	}
+	
+	private void crateListeners() {
+		rbtNombre.addActionListener(this);
+		rbtEdad.addActionListener(this);
+		rbtEstatura.addActionListener(this);
+		rbtAll.addActionListener(this);
+		
+		btnRegistrar.addActionListener(this);
+		btnConsulta.addActionListener(this);
+		btnSalir.addActionListener(this);
+		
+		txtNombre.addActionListener(this);
+		txtEdad.addActionListener(this);
+		txtEstatura.addActionListener(this);
 	}
 	
 	@Override
