@@ -252,7 +252,6 @@ public class MainFrame extends JFrame implements ActionListener,KeyListener {
 		Toolkit tk = Toolkit.getDefaultToolkit();
 		char typedChar = evt.getKeyChar();
 		JTextField field = (JTextField) evt.getSource(); 
-		System.out.println(typedChar);
 		if(field == txtEdad || field == txtEstatura) {
 			if(!Character.isDigit(typedChar)) {
 				tk.beep();
