@@ -96,7 +96,7 @@ public class MainFrame extends JFrame implements ActionListener,KeyListener {
 	}
 	
 	private void createCenterPanel() {
-		centerPanel = new JPanel(new GridLayout(0,2,60,60));
+		centerPanel = new JPanel(new GridLayout(0,2,10,60));
 				
 		txtNombre = new JTextField();
 		txtEdad = new JTextField();
@@ -177,25 +177,33 @@ public class MainFrame extends JFrame implements ActionListener,KeyListener {
 	private void actionButton(ActionEvent e) {
 		JButton onClick = (JButton)e.getSource();
 		if(onClick == btnRegistrar) {
-			try {
-				Empleado empleado = new Empleado("",0,0);
-				empleado.nombre = txtNombre.getText();
-				empleado.edad = Integer.parseInt(txtEdad.getText());
-				empleado.estatura = Integer.parseInt(txtEstatura.getText());
-				empleados.InsertaOrdenado(empleado);
+			if(txtNombre.getText().length() == 0 || txtEdad.getText().length() == 0 || txtEstatura.getText().length() == 0) {
+				JOptionPane.showMessageDialog(null, "Algunos campos no han sido llenados");
+				return;
 			}
-			catch(Exception ex) {
-				
-			}
+			
+			Empleado empleado = new Empleado("",0,0);
+			empleado.nombre = txtNombre.getText();
+			empleado.edad = Integer.parseInt(txtEdad.getText());
+			empleado.estatura = Integer.parseInt(txtEstatura.getText());
+			empleados.InsertaOrdenado(empleado);
+			
+			txtNombre.setText("");
+			txtEdad.setText("");
+			txtEstatura.setText("");
+			
+			txtNombre.requestFocus();
 			return;
 		}
 		
 		if(onClick == btnConsulta) {
 			showDialog();
+			return;
 		}
 		
 		if(onClick == btnSalir) {
-			
+			setVisible(false);
+            dispose();
 		}
 	}
 	
@@ -216,7 +224,14 @@ public class MainFrame extends JFrame implements ActionListener,KeyListener {
 	}
 	
 	private void actionTextField(ActionEvent e) {
+		JTextField field = (JTextField) e.getSource();
 		
+		if(field == txtNombre)
+			txtEdad.requestFocus();
+		if(field == txtEdad)
+			txtEstatura.requestFocus();
+		if(field == txtEstatura)
+			btnRegistrar.requestFocus();
 	}
 
 	@Override
@@ -236,7 +251,7 @@ public class MainFrame extends JFrame implements ActionListener,KeyListener {
 		Toolkit tk = Toolkit.getDefaultToolkit();
 		char typedChar = evt.getKeyChar();
 		JTextField field = (JTextField) evt.getSource(); 
-		
+		System.out.println(typedChar);
 		if(field == txtEdad || field == txtEstatura) {
 			if(!Character.isDigit(typedChar)) {
 				tk.beep();
