@@ -67,6 +67,7 @@ public class MainFrame extends JFrame implements ActionListener,KeyListener {
 		rbtEdad = new JRadioButton("Edad");
 		rbtEstatura = new JRadioButton("Estatura");
 		rbtAll = new JRadioButton("Edad-Estatura-Nombre");
+		rbtNombre.setSelected(true);
 		
 		group.add(rbtNombre);
 		group.add(rbtEdad);
