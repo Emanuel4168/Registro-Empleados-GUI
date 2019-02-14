@@ -3,64 +3,47 @@ package views;
 import javax.swing.*;
 
 import Structures.*;
+import controllers.EmpleadosController;
+import models.Empleado;
+import models.EmpleadosModel;
 
 import java.awt.*;
 import java.awt.event.*;
 
-public class MainFrame extends JFrame implements ActionListener,KeyListener {
+public class MainFrame{
+	private static JPanel northPanel,southPanel,centerPanel,westPanel,eastPanel;
+	private static JRadioButton rbtNombre,rbtEdad,rbtEstatura,rbtAll;
+	private static JButton btnRegistrar,btnConsulta,btnSalir;
+	private static JTextField txtNombre, txtEdad,txtEstatura; 
+	private static JFrame mainFrame;
+	private Toolkit tk = Toolkit.getDefaultToolkit();
+	private static EmpleadosController controller;
 	
-	private class Empleado{
-		public String nombre;
-		public int edad;
-		public int estatura;
-		
-		public Empleado(String nombre, int edad, int estatura) {
-			this.nombre = nombre;
-			this.edad = edad; 
-			this.estatura = estatura;
-		}
-		
-		public String toString() {
-			if(criterioOrdenamiento == 1)
-				return Rutinas.PonBlancos(nombre, 30);
-			if(criterioOrdenamiento == 2)
-				return Rutinas.PonCeros(edad,4);
-			if(criterioOrdenamiento == 3)
-				return Rutinas.PonCeros(estatura,4);
-			
-			return Rutinas.PonCeros(edad,4) + Rutinas.PonCeros(estatura, 4)+ Rutinas.PonBlancos(nombre, 30);
-		}
-		
+	public static void main(String [] a) {	
+		start();
 	}
-
-	private JPanel northPanel,southPanel,centerPanel,westPanel,eastPanel;
-	private JRadioButton rbtNombre,rbtEdad,rbtEstatura,rbtAll;
-	private JButton btnRegistrar,btnConsulta,btnSalir;
-	private JTextField txtNombre, txtEdad,txtEstatura;
-	private ListaDBL<Empleado> empleados = new ListaDBL<>();
-	private static int criterioOrdenamiento = 1; 
 	
 	public MainFrame() {
-		createNorthPanel();
-		createSouthPanel();
-		createCenterPanel();
-		
-		setResizable(false);
-		setSize(400,300);
-		setLocationRelativeTo(null);
-		setVisible(true);
-		
-		crateListeners();
-		
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 	}
 	
-	public static void main(String [] a) {
-		new MainFrame();
+	private static  void start(){
+		mainFrame = new JFrame("Captura Empleados");
+		createNorthPanel();
+		createSouthPanel();
+		createCenterPanel();	
+
+		mainFrame.setResizable(false);
+		mainFrame.setSize(400,300);
+		mainFrame.setLocationRelativeTo(null);
+		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		controller = new EmpleadosController();
+		crateListeners();
+		mainFrame.setVisible(true);
 	}
 	
-	private void createNorthPanel() {
+	private static void createNorthPanel() {
 		northPanel = new JPanel(); 
 		ButtonGroup group = new ButtonGroup();
 		rbtNombre = new JRadioButton("Nombre");
@@ -79,10 +62,10 @@ public class MainFrame extends JFrame implements ActionListener,KeyListener {
 		northPanel.add(rbtEstatura);
 		northPanel.add(rbtAll);
 		
-		add(northPanel,BorderLayout.NORTH);
+		mainFrame.add(northPanel,BorderLayout.NORTH);
 	}
 	
-	private void createSouthPanel() {
+	private static void createSouthPanel() {
 		southPanel = new JPanel();
 		
 		btnRegistrar = new JButton("Registrar");
@@ -93,10 +76,10 @@ public class MainFrame extends JFrame implements ActionListener,KeyListener {
 		southPanel.add(btnConsulta);
 		southPanel.add(btnSalir);
 		
-		add(southPanel,BorderLayout.SOUTH);
+		mainFrame.add(southPanel,BorderLayout.SOUTH);
 	}
 	
-	private void createCenterPanel() {
+	private static void createCenterPanel() {
 		centerPanel = new JPanel(new GridLayout(0,2,10,60));
 				
 		txtNombre = new JTextField();
@@ -111,10 +94,10 @@ public class MainFrame extends JFrame implements ActionListener,KeyListener {
 		centerPanel.add(txtEstatura);
 		
 		centerPanel.setBackground(new Color(187,168,250));
-		add(centerPanel);
+		mainFrame.add(centerPanel);
 	}
 
-	private void createExtraPanels() {
+	/*private void createExtraPanels() {
 		eastPanel = new JPanel();
 		westPanel = new JPanel();
 		
@@ -123,205 +106,123 @@ public class MainFrame extends JFrame implements ActionListener,KeyListener {
 		
 		add(eastPanel, BorderLayout.EAST);
 		add(westPanel, BorderLayout.WEST);
-	}
+	}*/
 	
-	private void showDialog() {
-		if(empleados.Length() == 0) {
-			JOptionPane.showMessageDialog(null, "Aún no hay empleados");
-			return;
-		}
-
-		JDialog dialog = new JDialog(this,true);
-		JTextArea textArea = new JTextArea();
-		dialog.setTitle("Consulta");
-		dialog.setSize(300,300);
-		dialog.setLocationRelativeTo(null);
-		dialog.add(textArea);
-		//dialog.setLayout(new BoxLayout(dialog,BoxLayout.Y_AXIS));
-		dialog.setLayout(new GridLayout(0,1,10,10));
-		NodoDBL<Empleado> empleadoActual = empleados.getFrente();
-		while(empleadoActual != null) {
-			textArea.setText(textArea.getText()+"\n"+"Nombre: "+empleadoActual.Info.nombre+"  "+"Edad: "+empleadoActual.Info.edad+"  "+"Estatura: "+empleadoActual.Info.estatura);
-			empleadoActual = empleadoActual.getSig();
-		}
-		dialog.setVisible(true);
-	}
-	
-	private void crateListeners() {
-		rbtNombre.addActionListener(this);
-		rbtEdad.addActionListener(this);
-		rbtEstatura.addActionListener(this);
-		rbtAll.addActionListener(this);
+	private static void crateListeners() {
+		rbtNombre.addActionListener(controller);
+		rbtEdad.addActionListener(controller);
+		rbtEstatura.addActionListener(controller);
+		rbtAll.addActionListener(controller);
 		
-		btnRegistrar.addActionListener(this);
-		btnConsulta.addActionListener(this);
-		btnSalir.addActionListener(this);
+		btnRegistrar.addActionListener(controller);
+		btnConsulta.addActionListener(controller);
+		btnSalir.addActionListener(controller);
 		
-		txtNombre.addActionListener(this);
-		txtNombre.addKeyListener(this);
-		txtEdad.addActionListener(this);
-		txtEdad.addKeyListener(this);
-		txtEstatura.addActionListener(this);
-		txtEstatura.addKeyListener(this);
+		txtNombre.addActionListener(controller);
+		txtNombre.addKeyListener(controller);
+		txtEdad.addActionListener(controller);
+		txtEdad.addKeyListener(controller);
+		txtEstatura.addActionListener(controller);
+		txtEstatura.addKeyListener(controller);
 	}
 	
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		if(e.getSource() instanceof JButton)
-			actionButton(e);
-		if(e.getSource() instanceof JRadioButton)
-			actionRadioButton(e);
-		if(e.getSource() instanceof JTextField)
-			actionTextField(e);
-	}
 	
-	private void actionButton(ActionEvent e) {
-		JButton onClick = (JButton)e.getSource();
-		if(onClick == btnRegistrar) {
-			if(txtNombre.getText().length() == 0 || txtEdad.getText().length() == 0 || txtEstatura.getText().length() == 0) {
-				JOptionPane.showMessageDialog(null, "Algunos campos no han sido llenados");
+	//Auxiliares
+	  public void showDialog() {
+			if(EmpleadosModel.length() == 0) {
+				JOptionPane.showMessageDialog(null, "Aún no hay empleados");
 				return;
 			}
-			
+
+			JDialog dialog = new JDialog(mainFrame,true);
+			JTextArea textArea = new JTextArea();
+			textArea.setEditable(false);
+			dialog.setTitle("Consulta");
+			dialog.setSize(300,300);
+			dialog.setLocationRelativeTo(null);
+			dialog.add(textArea);
+			//dialog.setLayout(new BoxLayout(dialog,BoxLayout.Y_AXIS));
+			dialog.setLayout(new GridLayout(0,1,10,10));
+			NodoDBL<Empleado> empleadoActual = EmpleadosModel.getFrente();
+			while(empleadoActual != null) {
+				textArea.setText(textArea.getText()+"\n"+"Nombre: "+empleadoActual.Info.nombre+"  "+"Edad: "+empleadoActual.Info.edad+"  "+"Estatura: "+empleadoActual.Info.estatura);
+				empleadoActual = empleadoActual.getSig();
+			}
+			dialog.setVisible(true);
+		}
+	  
+	  public Empleado guardarEmpleado() {
 			Empleado empleado = new Empleado("",0,0);
 			empleado.nombre = txtNombre.getText();
 			empleado.edad = Integer.parseInt(txtEdad.getText());
 			empleado.estatura = Integer.parseInt(txtEstatura.getText());
-			empleados.InsertaOrdenado(empleado);
 			
 			txtNombre.setText("");
 			txtEdad.setText("");
 			txtEstatura.setText("");
 			
 			txtNombre.requestFocus();
-			return;
-		}
-		
-		if(onClick == btnConsulta) {
-			showDialog();
-			return;
-		}
-		
-		if(onClick == btnSalir) {
-			setVisible(false);
-            dispose();
-		}
-	}
-	
-	private void actionRadioButton(ActionEvent e) {
-		int criterioAnterior = criterioOrdenamiento;
-		JRadioButton radioOnClick = (JRadioButton) e.getSource();
-		if(radioOnClick == rbtNombre)
-			criterioOrdenamiento = 1;
-		if(radioOnClick == rbtEdad)
-			criterioOrdenamiento = 2;
-		if(radioOnClick == rbtEstatura)
-			criterioOrdenamiento = 3;
-		if(radioOnClick == rbtAll)
-			criterioOrdenamiento = 4;
-		
-		if(criterioAnterior != criterioOrdenamiento)
-			ordenarListaPorCriterio(empleados.getFrente(),empleados.getFin(),1,empleados.Length());
-	}
-	
-	private void actionTextField(ActionEvent e) {
-		JTextField field = (JTextField) e.getSource();
-		
-		if(field == txtNombre)
-			txtEdad.requestFocus();
-		if(field == txtEdad)
-			txtEstatura.requestFocus();
-		if(field == txtEstatura)
-			btnRegistrar.requestFocus();
-	}
-
-	@Override
-	public void keyPressed(KeyEvent evt) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void keyReleased(KeyEvent evt) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void keyTyped(KeyEvent evt) {
-		Toolkit tk = Toolkit.getDefaultToolkit();
-		char typedChar = evt.getKeyChar();
-		JTextField field = (JTextField) evt.getSource(); 
-		if(field == txtEdad || field == txtEstatura) {
-			if(!Character.isDigit(typedChar)) {
-				tk.beep();
-				evt.consume();
-			}
-			return;
-		}
-		
-		if(!Character.isLetter(typedChar)) {
-			tk.beep();
-			evt.consume();
-		}
-		
-	}
-	
-	//Auxiliares
-	private void ordenarListaPorCriterio(NodoDBL<Empleado> lower, NodoDBL<Empleado> higher, int lowerIndex, int higherIndex) {
-		int i = lowerIndex;
-        int j = higherIndex;
-		
-		NodoDBL<Empleado> nodoIzq = lower;
-		NodoDBL<Empleado> nodoDer = higher;
-        
-		int pivot = lowerIndex+(higherIndex-lowerIndex)/2;
-        NodoDBL<Empleado> nodoPivote = empleados.getFrente();
-        
-        for(int it = 1 ; it < pivot; it++)
-        	nodoPivote = nodoPivote.getSig();
-        
-        do {
-        	
-            while (nodoIzq.Info.toString().compareToIgnoreCase(nodoPivote.Info.toString()) < 0 && i < higherIndex) {
-                nodoIzq = nodoIzq.getSig();
-                i++;
-            }
-    
-            while (nodoDer.Info.toString().compareToIgnoreCase(nodoPivote.Info.toString()) > 0 && j > lowerIndex) {
-                nodoDer = nodoDer.getAnt();
-                j--;
-            }
-            
-            if (i <= j) {
-                intercambiarNodos(nodoIzq, nodoDer);
-                //move index to next position on both sides
-                i++;
-                nodoIzq = nodoIzq.getSig();
-                j--;
-                nodoDer = nodoDer.getAnt();
-            }
-        }while (i <= j);
-        
-        if (lowerIndex < j) 
-        	ordenarListaPorCriterio(lower, nodoDer, lowerIndex, j);
-        if (i < higherIndex) 
-        	ordenarListaPorCriterio(nodoIzq, higher, i, higherIndex);
-		
-	}
-	
-	  private void intercambiarNodos(NodoDBL<Empleado> izq, NodoDBL<Empleado> der) {
-		  Empleado aux = izq.Info; //new Empleado(izq.Info.nombre, izq.Info.edad, izq.Info.estatura);
-		  izq.Info = der.Info;//new Empleado(der.Info.nombre, der.Info.edad, der.Info.estatura);;
-		  der.Info = aux;
+			return empleado;
 	  }
 	  
-	  private void imprimirEmpleados(ListaDBL<Empleado> empleados) {
-		  NodoDBL<Empleado> empleadoActual = empleados.getFrente();
-		  while(empleadoActual != null) {
-			  System.out.println("Nombre: "+empleadoActual.Info.nombre+"\t"+"Edad: "+empleadoActual.Info.edad+"\t"+"Estatura: "+empleadoActual.Info.estatura);
-			  empleadoActual = empleadoActual.getSig();
-		  }
-		  System.out.println();
+	  public boolean registrarIsOnClick(ActionEvent e) {
+		  return e.getSource() == btnRegistrar;
 	  }
+	  
+	  public boolean consultaIsOnClick(ActionEvent e) {
+		  return e.getSource() == btnConsulta;
+	  }
+	  
+	  public boolean salirIsOnClick(ActionEvent e) {
+		  return e.getSource() == btnSalir;
+	  }
+	  
+	  public boolean formIsNotComplete() {
+		  if(txtNombre.getText().length() == 0 ||txtEdad.getText().length() == 0 || txtEstatura.getText().length() == 0) {
+			  JOptionPane.showMessageDialog(null, "Algunos campos no han sido llenados");
+			  return true;
+		  }
+		  return false;
+	  }
+	  
+	  public boolean nombreIsSelected(ActionEvent e) {
+		  return e.getSource() == rbtNombre;
+	  }
+	  
+	  public boolean edadIsSelected(ActionEvent e) {
+		  return e.getSource() == rbtEdad;
+	  }
+	  
+	  public boolean estaturaIsSelected(ActionEvent e) {
+		  return e.getSource() == rbtEstatura;
+	  }
+	  
+	  public boolean allIsSelected(ActionEvent e) {
+		  return e.getSource() == rbtAll;
+	  }
+	  
+	  public void ActionTextField(ActionEvent e) {
+			JTextField field = (JTextField) e.getSource();
+			
+			if(field == txtNombre)
+				txtEdad.requestFocus();
+			if(field == txtEdad)
+				txtEstatura.requestFocus();
+			if(field == txtEstatura)
+				btnRegistrar.requestFocus();
+	  }
+	  
+	  public boolean typedInNumericField(KeyEvent e) {
+		  return e.getSource() == txtEdad || e.getSource() == txtEstatura;
+	  }
+
+	public void sendAlert() {
+		tk.beep();
+	}  
+	
+	public void close() {
+		mainFrame.setVisible(false);
+		mainFrame.dispose();
+	}
+
 }
