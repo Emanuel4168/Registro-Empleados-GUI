@@ -62,11 +62,11 @@ public class EmpleadosModel {
 		ordenarListaPorCriterio(empleados.getFrente(),empleados.getFin(),1,empleados.Length());
 	}
 	
-	public static int length() {
+	public int length() {
 		return empleados.Length();
 	}
 	
-	public static NodoDBL<Empleado> getFrente(){
+	public NodoDBL<Empleado> getFrente(){
 		return empleados.getFrente();
 	}
 }

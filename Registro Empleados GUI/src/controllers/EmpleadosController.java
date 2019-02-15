@@ -3,6 +3,7 @@ package controllers;
 import java.awt.event.*;
 import javax.swing.*;
 
+import Structures.NodoDBL;
 import models.*;
 import views.MainFrame;
 
@@ -17,7 +18,7 @@ public class EmpleadosController implements ActionListener,KeyListener {
 	
 	public EmpleadosController() {
 		model = new EmpleadosModel();
-		frame = new MainFrame();
+		frame = MainFrame.getInstance();
 	}
 	
 	@Override
@@ -34,19 +35,24 @@ public class EmpleadosController implements ActionListener,KeyListener {
 	@Override
 	public void keyTyped(KeyEvent e) {
 		char typedChar = e.getKeyChar();
+
+		if(typedChar == KeyEvent.VK_ENTER)
+			frame.clickOnEnter();
+			
+		if(frame.fieldIsFull(e)) {
+			frame.sendAlert();
+			e.consume();
+
+		}
+		
 		if(frame.typedInNumericField(e)) {
-			if(!Character.isDigit(typedChar)  && code != 8 && code != KeyEvent.VK_DELETE) {
-				System.out.println("VK_DELETE "  +KeyEvent.VK_DELETE+  "   "+ code);
-				frame.sendAlert();
+			if(!Character.isDigit(typedChar))   // && code != 8 && code != KeyEvent.VK_DELETE) {
 				e.consume();
-			}
 			return;
 		}
 		
-		if(!Character.isLetter(typedChar) && code != 8  && code != KeyEvent.VK_DELETE) {
-			frame.sendAlert();
+		if(!Character.isLetter(typedChar))    // && code != 8  && code != KeyEvent.VK_DELETE) {
 			e.consume();
-		}
 		
 	}
 
@@ -92,7 +98,7 @@ public class EmpleadosController implements ActionListener,KeyListener {
 		if(frame.allIsSelected(e))
 			Empleado.criterioOrdenamiento = 4;
 		
-		if(criterioAnterior != Empleado.criterioOrdenamiento)
+		if(criterioAnterior != Empleado.criterioOrdenamiento && model.length() > 1)
 			model.ordenarListaPorCriterio();
 	}
 	
@@ -100,4 +106,12 @@ public class EmpleadosController implements ActionListener,KeyListener {
 		frame.ActionTextField(e);
 	}
 	
+	//Métodos auxiliares
+	public int length() {
+		return model.length();
+	}
+	
+	public NodoDBL<Empleado> getFrente(){
+		return model.getFrente();
+	}
 }

@@ -18,13 +18,23 @@ public class MainFrame{
 	private static JFrame mainFrame;
 	private Toolkit tk = Toolkit.getDefaultToolkit();
 	private static EmpleadosController controller;
+	private static MainFrame instance;
+	
+	private static final Color MAIN_COLOR = new Color(240,229,77);
+	private static final Color BORDER_COLOR = new Color(249,244,178);
 	
 	public static void main(String [] a) {	
 		start();
 	}
 	
-	public MainFrame() {
-
+	private MainFrame() {
+		
+	}
+	
+	public static MainFrame getInstance() {
+		if(instance == null)
+			instance = new MainFrame();
+		return instance;
 	}
 	
 	private static  void start(){
@@ -34,7 +44,7 @@ public class MainFrame{
 		createCenterPanel();	
 
 		mainFrame.setResizable(false);
-		mainFrame.setSize(400,300);
+		mainFrame.pack();
 		mainFrame.setLocationRelativeTo(null);
 		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
@@ -52,6 +62,11 @@ public class MainFrame{
 		rbtAll = new JRadioButton("Edad-Estatura-Nombre");
 		rbtNombre.setSelected(true);
 		
+		rbtNombre.setBackground(BORDER_COLOR);
+		rbtEdad.setBackground(BORDER_COLOR);;
+		rbtEstatura.setBackground(BORDER_COLOR);;
+		rbtAll.setBackground(BORDER_COLOR);;
+		
 		group.add(rbtNombre);
 		group.add(rbtEdad);
 		group.add(rbtEstatura);
@@ -61,6 +76,7 @@ public class MainFrame{
 		northPanel.add(rbtEdad);
 		northPanel.add(rbtEstatura);
 		northPanel.add(rbtAll);
+		northPanel.setBackground(new Color(249,244,178));
 		
 		mainFrame.add(northPanel,BorderLayout.NORTH);
 	}
@@ -72,9 +88,14 @@ public class MainFrame{
 		btnConsulta = new JButton("Consultar");
 		btnSalir = new JButton("Salir");
 		
+		btnRegistrar.setBackground(MAIN_COLOR);
+		btnConsulta.setBackground(MAIN_COLOR);;
+		btnSalir.setBackground(MAIN_COLOR);;
+		
 		southPanel.add(btnRegistrar);
 		southPanel.add(btnConsulta);
 		southPanel.add(btnSalir);
+		southPanel.setBackground(new Color(249,244,178));
 		
 		mainFrame.add(southPanel,BorderLayout.SOUTH);
 	}
@@ -93,7 +114,7 @@ public class MainFrame{
 		centerPanel.add(new JLabel("Estatura: ", SwingConstants.RIGHT));
 		centerPanel.add(txtEstatura);
 		
-		centerPanel.setBackground(new Color(187,168,250));
+		centerPanel.setBackground(new Color(240,229,77));
 		mainFrame.add(centerPanel);
 	}
 
@@ -129,13 +150,14 @@ public class MainFrame{
 	
 	//Auxiliares
 	  public void showDialog() {
-			if(EmpleadosModel.length() == 0) {
+			if(controller.length() == 0) {
 				JOptionPane.showMessageDialog(null, "Aún no hay empleados");
 				return;
 			}
 
 			JDialog dialog = new JDialog(mainFrame,true);
 			JTextArea textArea = new JTextArea();
+			textArea.setBackground(new Color(240,229,77));
 			textArea.setEditable(false);
 			dialog.setTitle("Consulta");
 			dialog.setSize(300,300);
@@ -143,7 +165,7 @@ public class MainFrame{
 			dialog.add(textArea);
 			//dialog.setLayout(new BoxLayout(dialog,BoxLayout.Y_AXIS));
 			dialog.setLayout(new GridLayout(0,1,10,10));
-			NodoDBL<Empleado> empleadoActual = EmpleadosModel.getFrente();
+			NodoDBL<Empleado> empleadoActual = controller.getFrente();
 			while(empleadoActual != null) {
 				textArea.setText(textArea.getText()+"\n"+"Nombre: "+empleadoActual.Info.nombre+"  "+"Edad: "+empleadoActual.Info.edad+"  "+"Estatura: "+empleadoActual.Info.estatura);
 				empleadoActual = empleadoActual.getSig();
@@ -205,16 +227,32 @@ public class MainFrame{
 			JTextField field = (JTextField) e.getSource();
 			
 			if(field == txtNombre)
-				txtEdad.requestFocus();
+				txtEdad.requestFocusInWindow();
 			if(field == txtEdad)
-				txtEstatura.requestFocus();
-			if(field == txtEstatura)
-				btnRegistrar.requestFocus();
+				txtEstatura.requestFocusInWindow();
+//			if(field == txtEstatura)
+//				btnRegistrar.requestFocusInWindow();
 	  }
 	  
 	  public boolean typedInNumericField(KeyEvent e) {
 		  return e.getSource() == txtEdad || e.getSource() == txtEstatura;
 	  }
+
+	  public boolean fieldIsFull(KeyEvent e) {
+		  if(e.getSource() == txtNombre)
+			  return txtNombre.getText().length() > 30;
+			  
+		  if(e.getSource() == txtEdad)
+			  return txtNombre.getText().length() > 3;
+				  
+		  return txtNombre.getText().length() > 4;
+	  }
+	  
+	public void clickOnEnter() {
+		if(mainFrame.getFocusOwner() == txtEstatura) {
+			btnRegistrar.doClick();
+		}
+	}
 
 	public void sendAlert() {
 		tk.beep();
