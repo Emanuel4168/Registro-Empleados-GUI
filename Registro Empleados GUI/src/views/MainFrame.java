@@ -5,20 +5,19 @@ import javax.swing.*;
 import Structures.*;
 import controllers.EmpleadosController;
 import models.Empleado;
-import models.EmpleadosModel;
 
 import java.awt.*;
 import java.awt.event.*;
 
 public class MainFrame{
-	private static JPanel northPanel,southPanel,centerPanel,westPanel,eastPanel;
+	private static JPanel northPanel,southPanel,centerPanel;
 	private static JRadioButton rbtNombre,rbtEdad,rbtEstatura,rbtAll;
 	private static JButton btnRegistrar,btnConsulta,btnSalir;
 	private static JTextField txtNombre, txtEdad,txtEstatura; 
 	private static JFrame mainFrame;
 	private Toolkit tk = Toolkit.getDefaultToolkit();
 	private static EmpleadosController controller;
-	private static MainFrame instance;
+//	private static MainFrame instance;
 	
 	private static final Color MAIN_COLOR = new Color(240,229,77);
 	private static final Color BORDER_COLOR = new Color(249,244,178);
@@ -27,15 +26,11 @@ public class MainFrame{
 		start();
 	}
 	
-	private MainFrame() {
-		
-	}
-	
-	public static MainFrame getInstance() {
-		if(instance == null)
-			instance = new MainFrame();
-		return instance;
-	}
+//	public static MainFrame getInstance() {
+//		if(instance == null)
+//			instance = new MainFrame();
+//		return instance;
+//	}
 	
 	private static  void start(){
 		mainFrame = new JFrame("Captura Empleados");
@@ -160,14 +155,16 @@ public class MainFrame{
 			textArea.setBackground(new Color(240,229,77));
 			textArea.setEditable(false);
 			dialog.setTitle("Consulta");
-			dialog.setSize(300,300);
+			dialog.setSize(350,300);
 			dialog.setLocationRelativeTo(null);
-			dialog.add(textArea);
+			JScrollPane scroll = new JScrollPane(textArea);
+			dialog.add(scroll);
+			
 			//dialog.setLayout(new BoxLayout(dialog,BoxLayout.Y_AXIS));
 			dialog.setLayout(new GridLayout(0,1,10,10));
 			NodoDBL<Empleado> empleadoActual = controller.getFrente();
 			while(empleadoActual != null) {
-				textArea.setText(textArea.getText()+"\n"+"Nombre: "+empleadoActual.Info.nombre+"  "+"Edad: "+empleadoActual.Info.edad+"  "+"Estatura: "+empleadoActual.Info.estatura);
+				textArea.setText(textArea.getText()+"\n"+empleadoActual.Info.display());
 				empleadoActual = empleadoActual.getSig();
 			}
 			dialog.setVisible(true);
@@ -243,9 +240,9 @@ public class MainFrame{
 			  return txtNombre.getText().length() > 30;
 			  
 		  if(e.getSource() == txtEdad)
-			  return txtNombre.getText().length() > 3;
+			  return txtEdad.getText().length() > 2;
 				  
-		  return txtNombre.getText().length() > 4;
+		  return txtEstatura.getText().length() > 2;
 	  }
 	  
 	public void clickOnEnter() {

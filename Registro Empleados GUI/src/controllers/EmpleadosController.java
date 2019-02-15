@@ -14,17 +14,15 @@ public class EmpleadosController implements ActionListener,KeyListener {
 	
 	private EmpleadosModel model;
 	private MainFrame frame;
-	private static 	int code;
 	
 	public EmpleadosController() {
 		model = new EmpleadosModel();
-		frame = MainFrame.getInstance();
+		frame = new MainFrame();
 	}
 	
 	@Override
 	public void keyPressed(KeyEvent e) {
 		// TODO Auto-generated method stub
-		code = e.getKeyCode();
 	}
 
 	@Override
@@ -51,7 +49,7 @@ public class EmpleadosController implements ActionListener,KeyListener {
 			return;
 		}
 		
-		if(!Character.isLetter(typedChar))    // && code != 8  && code != KeyEvent.VK_DELETE) {
+		if(!Character.isLetter(typedChar) && typedChar != ' ')    // && code != 8  && code != KeyEvent.VK_DELETE) {
 			e.consume();
 		
 	}
